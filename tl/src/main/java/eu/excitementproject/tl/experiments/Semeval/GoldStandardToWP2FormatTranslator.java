@@ -67,6 +67,28 @@ public class GoldStandardToWP2FormatTranslator {
 		return s;
 	}
 	
+	private String getWP2SameTextEdges(String text, Map<String,Set<String>> textToIdsMap){
+/*		Output example
+		<edge target="413572.txt_1_0" source="112459.txt_1_2" id="413572.txt_1_0-112459.txt_1_2">
+		<entailment_mod_insensitive> </entailment_mod_insensitive>
+		<entailment type="direct">yes</entailment>
+		</edge>
+*/		
+		String s="";
+		for (String tgtId : textToIdsMap.get(text)){
+			for (String srcId: textToIdsMap.get(text)){
+				if (srcId.equals(tgtId)) continue; // do not add edges with same src and tgt ids
+				s += "\t<edge target=\""+tgtId+"\" source=\""+srcId+"\" id=\""+tgtId+"-"+srcId+"\">\n";
+				s += "\t\t<entailment_mod_insensitive> </entailment_mod_insensitive>\n";
+				s+= "\t\t<entailment type=\"direct\">yes</entailment>\n";
+				s+="\t</edge>\n";
+				edgeNum++;
+			}
+		}			
+	//	logger.info(String.valueOf(i)+"\twp2 edges.");
+		return s;
+	}
+
 	private boolean createWP2xml(File annotationFile, File newFile, GoldStandardEdgesLoader gsloader){
 		boolean hasEdges = true;
 		try {
@@ -125,6 +147,11 @@ public class GoldStandardToWP2FormatTranslator {
 					s+=nodeContentById.get(id);
 					nodeNum++;
 				}
+			}
+			
+			// now add all the edges out of existing nodes (since there can be several nodes with the same text, which are stored as one node of our graph, bidirectional entailments between them are to be added)
+			for (EntailmentUnit node : graph.vertexSet()){
+				s+=getWP2SameTextEdges(node.getText(),textToIdsMap);
 			}
 			
 			if (!graph.edgeSet().isEmpty()){ // if graph has edges

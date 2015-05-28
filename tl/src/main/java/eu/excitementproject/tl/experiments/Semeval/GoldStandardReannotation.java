@@ -510,7 +510,7 @@ public class GoldStandardReannotation {
 			System.out.println("No edges removed from FGs.\nThe graph is consistent. Congratulations :)");					
 		}
 
-		ourCg.toDOT("C:/Users/Lili/My Documents/_graphs/"+txtFileReannotated.getName()+"_graph.dot.txt");
+		//ourCg.toDOT("C:/Users/Lili/My Documents/_graphs/"+txtFileReannotated.getName()+"_graph.dot.txt");
 		
 		return isConsistent;
 	}
@@ -613,7 +613,7 @@ public class GoldStandardReannotation {
 			trToWp2.createWP2xml(txtFileReannotated.getAbsolutePath().replace(".txt", "PlusClosure.xml"), decollapsedGraph, textToIdsMap, nodeContentById);
 		
 			System.out.println("Statistics:");
-			System.out.println("Cluster \t Distinct orphan nodes \t All nodes in FGs \t All edges in FGs \t All nodes in WP2 graph \t All edges in WP2 graph \t Distinct-text nodes in FGs \t Distinct-text edges in FGs \t Coll nodes \t meta-nodes \t Avg size of meta-node \t All meta-nodes sizes \t Coll Edges \t Distinct-text merged graph nodes \t Distinct-text merged graph edges");			
+			System.out.println("Cluster \t Distinct orphan nodes \t All nodes in FGs \t All edges in FGs \t All nodes in WP2 graph \t All edges in WP2 graph \t Distinct-text nodes in FGs \t Distinct-text YES-edges in FGs \t Distinct-text NO-edges in FGs \t Coll nodes \t meta-nodes \t Avg size of meta-node \t All meta-nodes sizes \t Coll Edges \t Distinct-text merged graph nodes \t Distinct-text merged graph edges");			
 
 			int on = 0;
 			for (EntailmentUnit node : decollapsedGraph.vertexSet()){
@@ -636,6 +636,7 @@ public class GoldStandardReannotation {
 				if (e.getTEdecision().getDecision().is(DecisionLabel.Entailment)) fgYesEdges++;
 			}
 			res+=fgYesEdges+"\t";
+			res+=(rfg.edgeSet().size()-fgYesEdges)+"\t";			
 			res+=ourCg.vertexSet().size()+"\t";
 			
 		//	System.out.println(rfg.toString());
@@ -687,7 +688,7 @@ public class GoldStandardReannotation {
 	 * @param args
 	 */
 	public static void main(String[] args) {		
-		String tlDir = "C:/Users/Lili/Git/Excitement-Transduction-Layer";
+		String tlDir = "C:/Git/Excitement-Transduction-Layer";
 //		String tlDir = "D:/LiliGit/Excitement-Transduction-Layer";
 		
 		GoldStandardReannotation tr = new GoldStandardReannotation();
@@ -754,9 +755,9 @@ public class GoldStandardReannotation {
 	String[] single = {"EMAIL0002"};
 
 	String stat="";
-	for (String clusterName : single){
-//		String set = "Test";
-		 String set = "Dev";
+	for (String clusterName : testsetEn){
+		String set = "Test";
+//		 String set = "Dev";
 		
 //		String suffix = "Reconciled";
 //		String suffix = "LB";
