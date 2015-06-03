@@ -192,10 +192,12 @@ public abstract class AbstractKmedoidsClusterer<T> {
 	
 	public Map<T,Map<T,Double>> finalAssignment(Set<T> elements, List<T> templates){
 		Map<T,Map<T,Double>> finalResults = new HashMap<T, Map<T,Double>>();
+		T miscTemplate = getOutOfClassKey(); // this T will be the key if none of the templates yields >0 similarity to the current document
+
 		for (T element : elements){ // assign to the template with the highest sim value
 			double maxSim = 0.0;
-			T bestTemplate = getOutOfClassKey(); // this T will be the key if none of the templates yields >0 similarity to the current document
-
+			T bestTemplate = miscTemplate;
+			
 			if (templates.contains(element)){ // if the element is itself a template,then assign it to its own class
 				bestTemplate = element;
 			}
@@ -220,6 +222,8 @@ public abstract class AbstractKmedoidsClusterer<T> {
 	
 	public Map<T,Map<T,Double>> finalAssignmentMulti(Set<T> elements, List<T> templates){		
 		Map<T,Map<T,Double>> finalResults = new HashMap<T, Map<T,Double>>();
+		T miscTemplate = getOutOfClassKey(); // this T will be the key if none of the templates yields >0 similarity to the current document
+
 		for (T element : elements){ // assign to the template with sim value > threshold
 			boolean assigned = false;
 			for (T template : templates){	
@@ -235,9 +239,9 @@ public abstract class AbstractKmedoidsClusterer<T> {
 			}
 			if (!assigned) {
 				Map<T,Double> elementsInCluster = new HashMap<T,Double>();
-				if (finalResults.containsKey(getOutOfClassKey())) elementsInCluster=finalResults.get(getOutOfClassKey());
+				if (finalResults.containsKey(miscTemplate)) elementsInCluster=finalResults.get(miscTemplate);
 				elementsInCluster.put(element,0.0);
-				finalResults.put(getOutOfClassKey(), elementsInCluster);				
+				finalResults.put(miscTemplate, elementsInCluster);				
 			}
 		}	
 		return finalResults;
